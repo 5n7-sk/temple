@@ -165,12 +165,13 @@ func (c CLI) Prompt() (string, error) {
 	}
 
 	searcher := func(input string, index int) bool {
-		var path string
-		path = c.Templates[index].Path
-		path = strings.Replace(strings.ToLower(path), " ", "", -1)
+		var key string
+		t := c.Templates[index]
+		key = t.Path + " " + strings.Join(t.Tags, " ")
+		key = strings.Replace(strings.ToLower(key), " ", "", -1)
 		input = strings.Replace(strings.ToLower(input), " ", "", -1)
 
-		return strings.Contains(path, input)
+		return strings.Contains(key, input)
 	}
 
 	sort.Slice(c.Templates, func(i, j int) bool {
