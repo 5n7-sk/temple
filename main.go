@@ -44,8 +44,9 @@ type Config struct {
 	ItemSize int `json:"itemSize"`
 }
 
-// Templates represents all templates
-type Templates []struct {
+// Template represents a template
+type Template struct {
+	Name string   `json:"name"`
 	Path string   `json:"path"`
 	Tags []string `json:"tags"`
 }
@@ -53,7 +54,7 @@ type Templates []struct {
 // CLI represents this application itself
 type CLI struct {
 	Config    Config
-	Templates Templates
+	Templates []Template
 }
 
 func copy(srcPath, dstPath string) error {
@@ -127,7 +128,7 @@ func isBinary(path string) bool {
 }
 
 // Prompt prompts CLI
-func (c CLI) Prompt() (string, error) {
+func (c CLI) Prompt() (Template, error) {
 	min := func(x, y int) int {
 		if x < y {
 			return x
@@ -163,6 +164,7 @@ func (c CLI) Prompt() (string, error) {
 		Inactive: "  {{ .Path | faint }}",
 		Selected: promptui.IconGood + " {{ .Path }}",
 		Details: `
+{{ "Name:" | faint }}	{{ .Name }}
 {{ "Path:" | faint }}	{{ .Path }}
 {{ "Tags:" | faint }}	{{ .Tags | join }}
 {{ "Content:" | faint }}	{{ .Path | head }}
@@ -195,8 +197,7 @@ func (c CLI) Prompt() (string, error) {
 	}
 
 	index, _, err := prompt.Run()
-
-	return c.Templates[index].Path, err
+	return c.Templates[index], err
 }
 
 func run(args []string) int {
@@ -246,15 +247,16 @@ func run(args []string) int {
 	var cli CLI
 	viper.Unmarshal(&cli)
 
-	p, err := cli.Prompt()
+	t, err := cli.Prompt()
 	if err != nil {
 		log.Print(err)
 		return 1
 	}
 
-	ps := strings.Split(p, "/")
-	name := ps[len(ps)-1]
-	copy(p, name)
+	if err := copy(t.Path, t.Name); err != nil {
+		log.Print(err)
+		return 1
+	}
 
 	return 0
 }
