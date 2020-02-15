@@ -27,9 +27,15 @@ var usr = func() *user.User {
 	return usr
 }()
 
+// These variables are set in build step
+var (
+	Version = "unset"
+)
+
 // Option represents application options
 type Option struct {
-	Init bool `short:"i" long:"init" description:"Initialize temple config file"`
+	Init    bool `short:"i" long:"init" description:"Initialize temple config file"`
+	Version bool `short:"v" long:"version" description:"Show temple version"`
 }
 
 // Config represents the settings for this application
@@ -205,6 +211,11 @@ func run(args []string) int {
 			log.Print(err)
 			return 1
 		}
+		return 0
+	}
+
+	if opt.Version {
+		fmt.Printf("temple v%s\n", Version)
 		return 0
 	}
 
