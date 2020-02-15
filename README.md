@@ -5,6 +5,12 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/skmatz/temple/actions?query=workflow%3Abuild">
+    <img
+      src="https://github.com/skmatz/temple/workflows/build/badge.svg"
+      alt="release"
+    />
+  </a>
   <a href="./LICENSE">
     <img
       src="https://img.shields.io/github/license/skmatz/temple"
@@ -15,6 +21,12 @@
     <img
       src="https://img.shields.io/github/go-mod/go-version/skmatz/temple"
       alt="go version"
+    />
+  </a>
+  <a href="https://github.com/skmatz/temple/releases/latest">
+    <img
+      src="https://img.shields.io/github/v/release/skmatz/temple"
+      alt="release"
     />
   </a>
 </p>
