@@ -13,6 +13,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/gabriel-vasile/mimetype"
 	"github.com/jessevdk/go-flags"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/viper"
@@ -105,6 +106,20 @@ func download(url string, path string) error {
 	return err
 }
 
+func isBinary(path string) bool {
+	mine, err := mimetype.DetectFile(path)
+	if err != nil {
+		return true
+	}
+	isBinary := true
+	for m := mine; m != nil; m = m.Parent() {
+		if m.Is("text/plain") {
+			isBinary = false
+		}
+	}
+	return isBinary
+}
+
 // Prompt prompts CLI
 func (c CLI) Prompt() (string, error) {
 	min := func(x, y int) int {
@@ -120,6 +135,10 @@ func (c CLI) Prompt() (string, error) {
 	}
 	funcMap["head"] = func(path string) string {
 		p := strings.Replace(path, "~", usr.HomeDir, -1)
+		if isBinary(p) {
+			return "binary"
+		}
+
 		b, err := ioutil.ReadFile(p)
 		if err != nil {
 			return err.Error()
