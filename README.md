@@ -47,6 +47,7 @@ Search: █
 Select
   ▸ ~/go/src/github.com/skmatz/temple/main.go
 
+Name:           main.go
 Path:           ~/go/src/github.com/skmatz/temple/main.go
 Tags:           go, temple
 Content:

@@ -5,6 +5,7 @@
   },
   "templates": [
     {
+      "name": ".bashrc",
       "path": "~/.bashrc",
       "tags": ["bash", "config"]
     }
