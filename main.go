@@ -18,6 +18,14 @@ import (
 	"github.com/spf13/viper"
 )
 
+var usr = func() *user.User {
+	usr, err := user.Current()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return usr
+}()
+
 // Option represents application options
 type Option struct {
 	Init bool `short:"i" long:"init" description:"Initialize temple config file"`
@@ -43,11 +51,6 @@ type CLI struct {
 
 func copy(srcPath, dstPath string) error {
 	var err error
-
-	usr, err := user.Current()
-	if err != nil {
-		return err
-	}
 
 	srcPath, err = filepath.Abs(strings.Replace(srcPath, "~", usr.HomeDir, -1))
 	if err != nil {
@@ -116,11 +119,6 @@ func (c CLI) Prompt() (string, error) {
 		return strings.Join(texts, ", ")
 	}
 	funcMap["head"] = func(path string) string {
-		usr, err := user.Current()
-		if err != nil {
-			return err.Error()
-		}
-
 		p := strings.Replace(path, "~", usr.HomeDir, -1)
 		b, err := ioutil.ReadFile(p)
 		if err != nil {
@@ -180,11 +178,6 @@ func run(args []string) int {
 	args, err := flags.ParseArgs(&opt, args)
 	if err != nil {
 		return 2
-	}
-
-	usr, err := user.Current()
-	if err != nil {
-		return 1
 	}
 
 	if opt.Init {
