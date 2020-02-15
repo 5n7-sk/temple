@@ -18,3 +18,46 @@
     />
   </a>
 </p>
+
+# Temple
+
+**Temple** is a simple CUI for copying files at hand.
+
+Have you ever wondered, "I need that file again, but where is it?"  
+Temple brings the file to your hand quickly and accurately with CLI.
+
+## Usage
+
+```console
+> temple
+
+Search: █
+Select
+  ▸ ~/go/src/github.com/skmatz/temple/main.go
+
+Path:           ~/go/src/github.com/skmatz/temple/main.go
+Tags:           go, temple
+Content:
+  package main
+
+  import (
+          "fmt"
+          "io"
+          "io/ioutil"
+          "log"
+          "net/http"
+          "os"
+          "os/user"
+```
+
+## Install
+
+### Binary
+
+Get binary from [releases](https://github.com/skmatz/temple/releases).
+
+### Source
+
+```sh
+go get github.com/skmatz/temple
+```
