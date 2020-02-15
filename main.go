@@ -207,7 +207,21 @@ func run(args []string) int {
 	}
 
 	if opt.Init {
-		if err = download("https://raw.githubusercontent.com/skmatz/temple/master/temple.json", path.Join(usr.HomeDir, ".config/temple.json")); err != nil {
+		p := path.Join(usr.HomeDir, ".config/temple.json")
+
+		if _, err := os.Stat(p); !os.IsNotExist(err) {
+			prompt := promptui.Prompt{
+				Label:     "Overwrite",
+				IsConfirm: true,
+			}
+
+			r, _ := prompt.Run()
+			if strings.ToLower(r) != "y" {
+				return 0
+			}
+		}
+
+		if err = download("https://raw.githubusercontent.com/skmatz/temple/master/temple.json", p); err != nil {
 			log.Print(err)
 			return 1
 		}
