@@ -5,15 +5,23 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"os/user"
+	"path"
 	"path/filepath"
 	"sort"
 	"strings"
 
+	"github.com/jessevdk/go-flags"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/viper"
 )
+
+// Option represents application options
+type Option struct {
+	Init bool `short:"i" long:"init" description:"Initialize temple config file"`
+}
 
 // Config represents the settings for this application
 type Config struct {
@@ -73,6 +81,25 @@ func copy(srcPath, dstPath string) error {
 
 	fmt.Printf("%s -> %s\n", srcPath, dstPath)
 	return nil
+}
+
+func download(url string, path string) error {
+	fmt.Printf("%s -> %s\n", url, path)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	out, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, resp.Body)
+	return err
 }
 
 // Prompt prompts CLI
@@ -148,12 +175,31 @@ func (c CLI) Prompt() (string, error) {
 	return c.Templates[index].Path, err
 }
 
-func run() int {
+func run(args []string) int {
+	var opt Option
+	args, err := flags.ParseArgs(&opt, args)
+	if err != nil {
+		return 2
+	}
+
+	usr, err := user.Current()
+	if err != nil {
+		return 1
+	}
+
+	if opt.Init {
+		if err = download("https://raw.githubusercontent.com/skmatz/temple/master/temple.json", path.Join(usr.HomeDir, ".config/temple.json")); err != nil {
+			log.Print(err)
+			return 1
+		}
+		return 0
+	}
+
 	viper.SetConfigName("temple")
 	viper.SetConfigType("json")
 	viper.AddConfigPath("$HOME/.config")
 
-	err := viper.ReadInConfig()
+	err = viper.ReadInConfig()
 	if err != nil {
 		log.Print(err)
 		return 1
@@ -176,5 +222,5 @@ func run() int {
 }
 
 func main() {
-	os.Exit(run())
+	os.Exit(run(os.Args[1:]))
 }
