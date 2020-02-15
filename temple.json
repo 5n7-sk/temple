@@ -1,0 +1,12 @@
+{
+  "config": {
+    "headSize": 10,
+    "itemSize": 10
+  },
+  "templates": [
+    {
+      "path": "~/.bashrc",
+      "tags": ["bash", "config"]
+    }
+  ]
+}
