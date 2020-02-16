@@ -15,6 +15,7 @@ import (
 
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/jessevdk/go-flags"
+	"github.com/lithammer/fuzzysearch/fuzzy"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/viper"
 )
@@ -173,13 +174,16 @@ func (c CLI) Prompt() (Template, error) {
 	}
 
 	searcher := func(input string, index int) bool {
-		var key string
 		t := c.Templates[index]
-		key = t.Path + " " + strings.Join(t.Tags, " ")
-		key = strings.Replace(strings.ToLower(key), " ", "", -1)
 		input = strings.Replace(strings.ToLower(input), " ", "", -1)
+		name := strings.Replace(strings.ToLower(t.Name), " ", "", -1)
+		path := strings.Replace(strings.ToLower(t.Path), " ", "", -1)
+		tags := strings.Replace(strings.ToLower(strings.Join(c.Templates[index].Tags, " ")), " ", "", -1)
 
-		return strings.Contains(key, input)
+		if fuzzy.Match(input, name) || fuzzy.Match(input, path) || fuzzy.Match(input, tags) {
+			return true
+		}
+		return false
 	}
 
 	sort.Slice(c.Templates, func(i, j int) bool {
