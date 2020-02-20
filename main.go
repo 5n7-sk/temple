@@ -257,6 +257,18 @@ func run(args []string) int {
 		return 1
 	}
 
+	if _, err := os.Stat(t.Name); !os.IsNotExist(err) {
+		prompt := promptui.Prompt{
+			Label:     "Overwrite",
+			IsConfirm: true,
+		}
+
+		r, _ := prompt.Run()
+		if strings.ToLower(r) != "y" {
+			return 0
+		}
+	}
+
 	if err := copy(t.Path, t.Name); err != nil {
 		log.Print(err)
 		return 1
