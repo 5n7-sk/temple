@@ -51,16 +51,16 @@ Name:           main.go
 Path:           ~/go/src/github.com/skmatz/temple/main.go
 Tags:           go, temple
 Content:
-  package main
-
-  import (
-          "fmt"
-          "io"
-          "io/ioutil"
-          "log"
-          "net/http"
-          "os"
-          "os/user"
+   1 package main
+   2
+   3 import (
+   4         "fmt"
+   5         "io"
+   6         "io/ioutil"
+   7         "log"
+   8         "net/http"
+   9         "os"
+  10         "os/user"
 ```
 
 ## Install
