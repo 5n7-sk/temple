@@ -1,7 +1,8 @@
 {
   "config": {
     "headSize": 10,
-    "itemSize": 10
+    "itemSize": 10,
+    "syntaxHighlight": "monokai"
   },
   "templates": [
     {

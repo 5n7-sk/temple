@@ -45,8 +45,9 @@ type Option struct {
 
 // Config represents the settings for this application
 type Config struct {
-	HeadSize int `json:"headSize"`
-	ItemSize int `json:"itemSize"`
+	HeadSize        int    `json:"headSize"`
+	ItemSize        int    `json:"itemSize"`
+	SyntaxHighlight string `json:"syntaxHighlight"`
 }
 
 // Template represents a template
@@ -156,7 +157,10 @@ func (c CLI) Prompt() (Template, error) {
 			lexer = lexers.Fallback
 		}
 
-		style := styles.Fallback
+		style := styles.Get(c.Config.SyntaxHighlight)
+		if style == nil {
+			style = styles.Fallback
+		}
 
 		formatter := formatters.Get("terminal256")
 		if formatter == nil {
