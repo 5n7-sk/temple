@@ -184,9 +184,13 @@ func (c CLI) Prompt() (Template, error) {
 
 		s := w.String()
 		ss := strings.Split(s, "\n")
-		indent := fmt.Sprintf("\n%s", "  ")
 
-		return indent + strings.Join(ss[:min(len(ss), c.Config.HeadSize)], indent)
+		head := ""
+		for i := 0; i < min(len(ss), c.Config.HeadSize); i++ {
+			head += fmt.Sprintf("\n%4d %s", i+1, ss[i])
+		}
+
+		return head
 	}
 
 	templates := &promptui.SelectTemplates{
