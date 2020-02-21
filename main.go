@@ -17,6 +17,7 @@ import (
 	"github.com/alecthomas/chroma/formatters"
 	"github.com/alecthomas/chroma/lexers"
 	"github.com/alecthomas/chroma/styles"
+	"github.com/atotto/clipboard"
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/jessevdk/go-flags"
 	"github.com/lithammer/fuzzysearch/fuzzy"
@@ -39,6 +40,7 @@ var (
 
 // Option represents application options
 type Option struct {
+	Copy    bool `short:"c" long:"copy" description:"Copy to clipboard"`
 	Init    bool `short:"i" long:"init" description:"Initialize temple config file"`
 	Version bool `short:"v" long:"version" description:"Show temple version"`
 }
@@ -301,6 +303,23 @@ func run(args []string) int {
 		if strings.ToLower(r) != "y" {
 			return 0
 		}
+	}
+
+	if opt.Copy {
+		p := strings.Replace(t.Path, "~", usr.HomeDir, -1)
+		bytes, err := ioutil.ReadFile(p)
+		if err != nil {
+			log.Print(err)
+			return 1
+		}
+
+		if err := clipboard.WriteAll(string(bytes)); err != nil {
+			log.Print(err)
+			return 1
+		}
+
+		fmt.Printf("%s -> clipboard\n", p)
+		return 0
 	}
 
 	if err := copy(t.Path, t.Name); err != nil {
