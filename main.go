@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -13,6 +14,9 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/alecthomas/chroma/formatters"
+	"github.com/alecthomas/chroma/lexers"
+	"github.com/alecthomas/chroma/styles"
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/jessevdk/go-flags"
 	"github.com/lithammer/fuzzysearch/fuzzy"
@@ -147,12 +151,34 @@ func (c CLI) Prompt() (Template, error) {
 			return "binary"
 		}
 
-		b, err := ioutil.ReadFile(p)
+		lexer := lexers.Match(p)
+		if lexer == nil {
+			lexer = lexers.Fallback
+		}
+
+		style := styles.Fallback
+
+		formatter := formatters.Get("terminal256")
+		if formatter == nil {
+			formatter = formatters.Fallback
+		}
+
+		r, err := ioutil.ReadFile(p)
 		if err != nil {
 			return err.Error()
 		}
 
-		s := string(b)
+		iterator, err := lexer.Tokenise(nil, string(r))
+		if err != nil {
+			return err.Error()
+		}
+
+		w := new(bytes.Buffer)
+		if err := formatter.Format(w, style, iterator); err != nil {
+			return err.Error()
+		}
+
+		s := w.String()
 		ss := strings.Split(s, "\n")
 		indent := fmt.Sprintf("\n%s", "  ")
 
