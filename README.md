@@ -8,6 +8,12 @@
   <a href="https://github.com/skmatz/temple/actions?query=workflow%3Abuild">
     <img
       src="https://github.com/skmatz/temple/workflows/build/badge.svg"
+      alt="build"
+    />
+  </a>
+  <a href="https://github.com/skmatz/temple/actions?query=workflow%3Arelease">
+    <img
+      src="https://github.com/skmatz/temple/workflows/release/badge.svg"
       alt="release"
     />
   </a>
@@ -67,7 +73,12 @@ Content:
 
 ### Binary
 
-Get binary from [releases](https://github.com/skmatz/temple/releases).
+Get binary from [releases](https://github.com/skmatz/temple/releases).  
+If you already have [jq](https://github.com/stedolan/jq) and [fzf](https://github.com/junegunn/fzf) or [peco](https://github.com/peco/peco), you can download binary by running the following command.
+
+```sh
+curl -Ls https://api.github.com/repos/skmatz/temple/releases/latest | jq -r ".assets[].browser_download_url" | fzf | wget -i -
+```
 
 ### Source
 
